@@ -1,5 +1,6 @@
 import * as React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
+import {WebView} from 'react-native-webview'
 import dataHandler from '../components/datahandler';
 
 
@@ -8,22 +9,10 @@ import dataHandler from '../components/datahandler';
 const NoteView =  ({ route, navigation }) => {
     const { notesTitle, otherParam } = route.params;
     var [Loading, changeLoaderSate] = React.useState(true)
-    console.log("noteView.js", Loading)
+    // console.log("noteView.js", Loading)
     React.useEffect(() => {
         dataHandler("retrieveData", {"key":notesTitle, "callback":changeLoaderSate})
-      })
-    if(Loading == true){
-        let notesData = "Loading..."
-        return (<View>
-
-            <View style={styles.footer}>
-                <Text>{notesData}</Text>
-
-            </View>
-        </View>
-        )
-    }
-    else{
+      }, [])
 
         return (<View>
 
@@ -32,7 +21,17 @@ const NoteView =  ({ route, navigation }) => {
 
             </View>
         </View>)
-    }
+
+        
+        // return (
+        //     <WebView
+        //       source={{
+        //         uri: 'https://github.com/kom3/'
+        //       }}
+        //       style={{ marginTop: 20 }}
+        //     />
+        // )
+    
 }
 
 const styles = StyleSheet.create({

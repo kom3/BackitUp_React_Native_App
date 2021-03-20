@@ -23,20 +23,51 @@ const dataHandler = (method, data) => {
         console.log("in retrieve function received key:", key);
         try {
             content = await AsyncStorage.getItem(key);
-            console.log("in retrieve function fetched value is:", content);
+            // console.log("in retrieve function fetched value is:", content);
             callback(content)
         } catch (error) {
             return "failed"
         }
     };
 
+    const deleteData = async (data) => {
+        let key = data["key"];
+        let callback = data["callback"]
+        try {
+            await AsyncStorage.removeItem(key);
+            return true;
+        }
+        catch (exception) {
+            return false;
+        }
+    }
+
+    const alterData = async (data) => {
+        let key = data["key"];
+        try {
+            await AsyncStorage.removeItem(key);
+            return true;
+        }
+        catch (exception) {
+            return false;
+        }
+    }
+
     if (method == "storeData") {
-         storeData(data)
-        
+        storeData(data)
+
     }
     else if (method == "retrieveData") {
-         retrieveData(data)
-        
+        retrieveData(data)
+
+    }
+    else if (method == "deleteData") {
+        deleteData(data)
+
+    }
+    else if (method == "alterData") {
+        alterData(data)
+
     }
 }
 

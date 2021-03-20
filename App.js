@@ -15,6 +15,7 @@ import PasswordsPage from './components/passwords';
 import CalendarsPage from './components/calendars';
 import ResumePage from './components/resume';
 import NoteView from './components/noteview';
+import CreateNoteView from './components/create_or_view_or_update_note'
 
 export default function App() {
   let [timerflag, timerhandler] = React.useState({ timer: true });
@@ -23,7 +24,7 @@ export default function App() {
     setTimeout(() => {
       timerhandler({ timer: false })
     }, 1000);
-  })
+  }, [])
 
   const Stack = createStackNavigator();
 
@@ -41,7 +42,7 @@ export default function App() {
   else {
     return (
       // <LandingPage />
-      //  to hide the page header in all pages use screenOptions={{headerShown: false}} in <Stack.Navigator> 
+      //  to hide the page header and to show only back button in all pages use screenOptions={{headerShown: false}} in <Stack.Navigator> 
 
       <NavigationContainer>
         <Stack.Navigator>
@@ -56,10 +57,15 @@ export default function App() {
           <Stack.Screen name="passwords" component={PasswordsPage} />
           <Stack.Screen name="calendars" component={CalendarsPage} />
           <Stack.Screen name="resume" component={ResumePage} />
+          {/* passing props from one screen to another screen through navigation container*/}
           <Stack.Screen name="noteview">
-          {props => <NoteView {...props}  />}
-
+          {props => <NoteView {...props}  />} 
           </Stack.Screen>
+
+          <Stack.Screen name="newnote">
+          {props => <CreateNoteView {...props} />}
+          </Stack.Screen>
+
         </Stack.Navigator>
       </NavigationContainer>
 
