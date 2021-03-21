@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableNativeFeedback} from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableNativeFeedback, ToastAndroid} from "react-native";
 import LandingPage from "./landing";
 
 const LandingHeader = () => {
@@ -19,6 +19,8 @@ const LandingHeader = () => {
                         style={styles.cloud}
                         source={syncImage}
                     />
+                     {syncState && ToastAndroid.show("Sync on", ToastAndroid.SHORT)}
+                     {!syncState && ToastAndroid.show("Sync off", ToastAndroid.SHORT)}
             </View>
             </TouchableNativeFeedback>
             <TouchableOpacity>

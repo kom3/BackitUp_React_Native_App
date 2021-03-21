@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, View, Text, Image, TextInput, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid } from "react-native";
 import { WebView } from 'react-native-webview'
 import dataHandler from './datahandler';
 import RichTextEditorToolBar from './rich_text_editor_toolbar'
@@ -18,8 +18,8 @@ const CreateNoteView = ({ route, navigation }) => {
         let oldTitle = notesTitle
         return (<View>
             <View style={styles.container}>
-                <TextInput name="notetitle" style={{ height: 50, borderColor: 'gray', borderBottomWidth: 7, padding: 10, borderBottomColor: '#fff', textAlign:'center', fontSize:25 }} placeholder="Note title...">{notesTitle}</TextInput>
-                <ScrollView><TextInput name="notedata" style={{ height: '100%', overflow: 'scroll', textAlignVertical: 'top', top: 5, padding: 10 }} multiline={true} numberOfLines={1000000000} placeholder="start writting...">{content}</TextInput></ScrollView>
+                <TextInput name="notetitle"  style={{ height: 50, borderColor: 'gray', borderBottomWidth: 7, padding: 10, borderBottomColor: '#fff',  fontSize:25}} placeholder="Note title...">{notesTitle}</TextInput>
+                <ScrollView><TextInput name="notedata" style={{ minHeight: 1000, overflow: 'scroll', textAlignVertical: 'top', top: 5, padding: 10 }} multiline={true} numberOfLines={1000000000} placeholder="start writting...">{content}</TextInput></ScrollView>
             </View>
             <View style={styles.floatbtn}><TouchableOpacity onPress={() => console.log("saving......")}><Image style={styles.floatbtnicon} source={require('../images/save.png')} /></TouchableOpacity></View>
         </View>)
@@ -28,8 +28,8 @@ const CreateNoteView = ({ route, navigation }) => {
         // navigation.setOptions({ title: 'New' })
         return (<View>
             <View style={styles.container}>
-                <TextInput onChangeText={(title) => { handleTitle(title) }} style={{ height: 50, borderColor: 'gray', borderBottomWidth: 7, padding: 10, borderBottomColor: '#fff', textAlign:'center' }} placeholder="Note title..."></TextInput>
-                <ScrollView><TextInput onChangeText={(content) => { handleNotedata(content) }} style={{ height: '100%', overflow: 'scroll', textAlignVertical: 'top', top: 5, padding: 10 }} multiline={true} numberOfLines={1000000000} placeholder="start writting..."></TextInput></ScrollView>
+                <TextInput onChangeText={(title) => { handleTitle(title) }} style={{ height: 50, borderColor: 'gray', borderBottomWidth: 7, padding: 10, borderBottomColor: '#fff' }} placeholder="Note title..."></TextInput>
+                <ScrollView><TextInput onChangeText={(content) => { handleNotedata(content) }} style={{ minHeight: 1000, overflow: 'scroll', textAlignVertical: 'top', top: 5, padding: 10 }} multiline={true} numberOfLines={1000000000} placeholder="start writting..."></TextInput></ScrollView>
             </View>
             <View style={styles.floatbtn}><TouchableOpacity onPress={() => saveNoteToDB(title, notedata, navigation)}><Image style={styles.floatbtnicon} source={require('../images/save.png')} /></TouchableOpacity></View>
         </View>)
@@ -40,6 +40,7 @@ const CreateNoteView = ({ route, navigation }) => {
 const saveNoteToDB = (title, notedata, navigation) => {
 
     console.log("saving.....")
+    ToastAndroid.show("Saving...", ToastAndroid.SHORT);
     console.log("title:", title)
     // dataHandler("storeData", { "key": "notesList["+title+"]", "value": notedata })
     _retrieveFirstThenSaveData(title, notedata, navigation)
@@ -49,11 +50,20 @@ const _retrieveFirstThenSaveData = async (title, notedata, navigation) => {
 
     AsyncStorage.getItem('notesList')
         .then(data => {
+            if (data != null){
             data = JSON.parse(data);
             data[title] = { "content": notedata }
             AsyncStorage.setItem('notesList', JSON.stringify(data));
 
-        }).then(() => { navigation.navigate('notes') });
+        }
+        else{
+            initial_note = {}
+            initial_note[title] = { "content": notedata }
+            AsyncStorage.setItem('notesList', JSON.stringify(initial_note));
+
+        }
+        })
+        .then(() => { navigation.navigate('notes') });
 };
 
 const readNoteContentFromDB = () => {
@@ -68,7 +78,7 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         width: '100%',
-        padding: 10
+        padding: 10,
     },
     floatbtnicon: {
 

@@ -16,7 +16,7 @@ const NotesPage = ({route, navigation }) => {
     },[isFocused]);
 
     
-    // let notesList = {
+    // let notesListdata = {
     //         "note_name1": { "content": "1" },
     //         "note_name2": { "content": "2" },
     //         "note_name3": { "content": "3" },
@@ -40,7 +40,7 @@ const NotesPage = ({route, navigation }) => {
     //         "note_name21": { "content": "7" }
     //     }
 
-    // dataHandler("storeData", { "key": "notesList", "value": JSON.stringify(notesList) })
+    // dataHandler("storeData", { "key": "notesList", "value": JSON.stringify(notesListdata) })
 
     if (notesList == false){
         dataHandler("retrieveData", { "key": "notesList", "callback":handleNotes})
@@ -58,10 +58,11 @@ const NotesPage = ({route, navigation }) => {
         }
     return (<View>
         <SafeAreaView>
-            <ScrollView><View style={styles.container}>
-                < NotesListGenerator notesList={notesList} navigation={navigation} />
-            </View>
+        <View style={styles.container}>
+            <ScrollView>
+                <NotesListGenerator notesList={notesList} navigation={navigation} />
             </ScrollView>
+            </View>
         </SafeAreaView>
         <View style={styles.floatbtn}><TouchableOpacity onPress={() => navigation.navigate('newnote', {})}><Image style={styles.floatbtnicon} source={require('../images/create_notes.png')} /></TouchableOpacity></View>
     </View>
@@ -72,12 +73,19 @@ const NotesPage = ({route, navigation }) => {
 
 
 const NotesListGenerator = ({ notesList, navigation }) => {
-    let notesTitleList = Object.keys(notesList)
+    if (notesList != null){
+        let notesTitleList = Object.keys(notesList)
     if (notesTitleList.length != 0) {
 
         return notesTitleList.map((notesTitle) => (
-            <TouchableNativeFeedback onPress={() => navigation.navigate('newnote', { notesTitle, content:notesList[notesTitle]["content"] })}><View style={styles.bookRow} ><Image style={styles.icon} source={require('../images/book.png')} /><Text style={styles.title}>{notesTitle}</Text></View></TouchableNativeFeedback>
+            <TouchableNativeFeedback key={notesTitle} onPress={() => navigation.navigate('newnote', { notesTitle, content:notesList[notesTitle]["content"] })}><View style={styles.bookRow} ><Image style={styles.icon} source={require('../images/book.png')} /><Text style={styles.title}>{notesTitle}</Text></View></TouchableNativeFeedback>
         ));
+    }
+    else {
+        return (
+            <View style={{ height: '100%', width: '100%', alignItems: 'center' }}><Text style={{ fontSize: 18 }}>No notes available</Text></View>
+        )
+    }
     }
     else {
         return (
@@ -91,10 +99,9 @@ const NotesListGenerator = ({ notesList, navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        // zIndex:0,
         height: '100%',
         width: '100%',
-        // backgroundColor: '#E785E0',
+        justifyContent:'center',
         padding: 15,
     },
     icon: {
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
     },
     floatbtn: {
         position: 'absolute',
-        bottom: 25,
+        bottom:25,
         right: 25,
         backgroundColor: "red",
         height: 60,
